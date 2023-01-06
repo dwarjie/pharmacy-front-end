@@ -1,0 +1,67 @@
+// This sass file will customize the bootstrap default theme
+
+// override variables value
+// $h1-font-size:  
+// $h2-font-size:                $font-size-base * 2;
+// $h3-font-size:                $font-size-base * 1.75;
+// $h4-font-size:                $font-size-base * 1.5;
+// $h5-font-size:                $font-size-base * 1.25;
+// $h6-font-size:                $font-size-base;
+
+$primary: #28A745;
+$secondary: #457B9D;
+$danger: #E63946;
+$dark: #1D3557;
+
+// add the functions and variables in order to add more maps values
+@import "../../../node_modules/bootstrap/scss/functions";
+@import "../../../node_modules/bootstrap/scss/variables";
+
+// Spacing utilities
+$custom-spacers: (
+  6: $spacer * 5,
+  7: $spacer * 6.25,
+  8: $spacer * 9.37,
+);
+// Adding utilities
+$spacers: map-merge($custom-spacers, $spacers);
+
+@import "../../../node_modules/bootstrap/scss/maps";
+@import "../../../node_modules/bootstrap/scss/mixins";
+@import "../../../node_modules/bootstrap/scss/utilities";
+@import "../../../node_modules/bootstrap/scss/utilities/api";
+
+// Sizing utilities
+$utilities: map-merge(
+  $utilities,
+  (
+    "width": map-merge(
+      map-get($utilities, "width"),
+      (
+        values: map-merge(
+          map-get(map-get($utilities, "width"), "values"),
+          (10: 10%, 20: 20%, 30: 30%, 40: 40%, 50: 50%),
+        ),
+      ),
+    ),
+  ),
+);
+
+// media query
+@include media-breakpoint-down(md) {
+  .text-date {
+    font-size: 2rem !important;
+  }
+}
+
+// import the main boostrap
+@import "../../../node_modules/bootstrap/scss/bootstrap.scss";
+
+// import the google font
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+// then change the base font of the whole site
+:root {
+  --bs-body-font-family: 'Inter', sans-serif;
+}
+

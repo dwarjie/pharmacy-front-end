@@ -1,0 +1,251 @@
+/* VARIABLES */
+:root {
+	--darker-blue: #1d3557;
+	--dark-blue: #457b9d;
+	--light-blue: #a8dadc;
+	--cherry: #e63946;
+	--success: #28a745;
+	--smoke-white: #f1faee;
+	--input-border: #6f6f6f;
+	--back-order: #ffd651;
+}
+
+/* whole page */
+body {
+	color: #1d3557;
+}
+
+.App {
+	width: 100%;
+	height: 100%;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+
+/* CONTENT CONTAINER */
+.content-container {
+	transition: 0.4s;
+}
+
+/* Sizing */
+.width-10 {
+	width: 10%;
+}
+
+.height-10 {
+	height: 10%;
+}
+
+.min-height-85 {
+	min-height: 85vh;
+	max-height: 85vh;
+}
+
+.max-height-85 {
+	max-height: 85%;
+}
+
+.max-height-100 {
+	max-height: 100%;
+}
+
+/* TEXT */
+.text-weight-regular {
+	font-weight: 400;
+}
+
+.text-weight-medium {
+	font-weight: 500;
+}
+
+.text-date {
+	font-size: 3rem;
+}
+
+/* NAVIGATION */
+.top-navigation {
+	height: 4rem;
+}
+
+.side-navigation {
+	background-color: var(--darker-blue);
+	position: fixed;
+	width: 15rem;
+	margin-left: -15rem;
+	transition: 0.4s;
+}
+
+/* SIDE NAVIGATION & CONTENT CONTAINER TOGGLE */
+.active-nav {
+	margin-left: 0;
+}
+
+.active-content-container {
+	margin-left: 15rem;
+}
+
+/* NAVBAR TOGGLER */
+.burger {
+	color: var(--cherry);
+}
+
+.btn-toggler {
+	border: none !important;
+	background-color: transparent !important;
+}
+
+/* SHADOW */
+.simple-shadow {
+	box-shadow: 0px 5px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* ICONS */
+.icon-size-lg {
+	width: 1.8rem;
+	height: 1.8rem;
+}
+
+.icon-size-md {
+	width: 1.5rem;
+	height: 1.5rem;
+}
+
+.icon-size-sm {
+	width: 1.25rem;
+	height: 1.25rem;
+}
+
+/* BUTTONS */
+.btn {
+	color: white;
+}
+
+.btn-primary:hover {
+	color: white !important;
+}
+
+.btn-danger:hover {
+	color: white !important;
+}
+
+.button-font-md {
+	font-size: 1rem;
+}
+
+.button-padding-md {
+	padding-top: 0.9rem;
+	padding-bottom: 0.9rem;
+}
+
+.btn-side-navigation {
+	width: 100%;
+	color: white;
+	font-weight: 600;
+	text-align: left;
+}
+
+.btn-side-navigation:hover {
+	color: white !important;
+	background-color: var(--cherry) !important;
+}
+
+.btn-dropdown {
+	width: 100%;
+}
+
+/* FORMS COMPONENTS */
+
+.form-input {
+	background-color: white;
+	border: 1px solid var(--input-border);
+	border-radius: 5px;
+	color: var(--input-border);
+	padding: 0.5rem 1rem;
+	font-size: 0.9rem;
+}
+
+input {
+	font-size: 0.9rem;
+}
+
+label {
+	font-size: 0.9rem;
+	margin-bottom: 5px;
+}
+
+/* adding required icon into label */
+.required:after {
+	content: " *";
+	color: var(--cherry);
+}
+
+.form-lg-label {
+	font-weight: 500;
+	font-size: 1.2rem;
+}
+
+.form-sm-label {
+	font-size: 1rem;
+}
+
+/* TABLE LIST */
+.table-active {
+	background-color: var(--cherry);
+	color: white;
+}
+
+.table-fixed {
+	overflow-y: scroll;
+	height: fit-content;
+}
+
+.item-back-order {
+	background-color: var(--back-order);
+}
+
+.item-received {
+	background-color: var(--success);
+}
+
+/* DROP DOWN FOR INVENTORY SEARCHING */
+.search-inner {
+	position: relative;
+	display: flex;
+}
+
+.dropdown-items {
+	z-index: 99;
+	position: absolute;
+	width: inherit;
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	border: 1px solid gray;
+}
+
+.dropdown-items:empty {
+	border: none;
+}
+
+.dropdown-row:hover {
+	background-color: rgb(219, 219, 219);
+}
+
+.dropdown-row h5 {
+	padding: 0.3rem;
+	font-size: 1.1rem;
+}
+
+/*  LOADER  */
+.loader {
+	width: 100px;
+	height: 100px;
+}
+
+/* dashboard */
+.dashboard-card {
+	width: 15rem;
+	max-width: 18rem;
+}
