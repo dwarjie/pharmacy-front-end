@@ -226,7 +226,7 @@ const InventoryModule = () => {
 			<ul className="dropdown-menu" aria-labelledby="dropdownMenuButton1">
 				<li>
 					<Link to={"/pharmacy/inventory/order-list"} className="dropdown-item">
-						Order List
+						Purchase Order List
 					</Link>
 				</li>
 				<li>
@@ -303,7 +303,7 @@ const SalesModule = () => {
 					</Link>
 				</li>
 				<li>
-					<Link to={"pharmacy/sales/return"} className="dropdown-item">
+					<Link to={"/pharmacy/sales/return"} className="dropdown-item">
 						Return
 					</Link>
 				</li>
@@ -333,6 +333,14 @@ const ReportsModule = () => {
 					</Link>
 				</li>
 				<li>
+					<Link
+						to={"/pharmacy/report/invoice-report"}
+						className="dropdown-item"
+					>
+						Invoice Report
+					</Link>
+				</li>
+				<li>
 					<Link to={"/pharmacy/report/master-list"} className="dropdown-item">
 						Master List
 					</Link>
@@ -356,6 +364,14 @@ const ReportsModule = () => {
 						className="dropdown-item"
 					>
 						Stock Adjustment History
+					</Link>
+				</li>
+				<li>
+					<Link
+						to={"/pharmacy/report/return-history"}
+						className="dropdown-item"
+					>
+						Return History
 					</Link>
 				</li>
 			</ul>
@@ -389,12 +405,12 @@ const UtilitiesModule = () => {
 					</Link>
 				</li>
 				<li>
-					<Link to={"/pharmacy/utilities/backup"} className="dropdown-item">
+					<Link to={"/pharmacy/dashboard"} className="dropdown-item">
 						Download Backup
 					</Link>
 				</li>
 				<li>
-					<Link to={"/pharmacy/utilities/restore"} className="dropdown-item">
+					<Link to={"/pharmacy/dashboard"} className="dropdown-item">
 						Restose Database
 					</Link>
 				</li>

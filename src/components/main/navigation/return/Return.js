@@ -6,24 +6,25 @@ import AlertInfoLayout from "../../../layout/AlertInfo.layout";
 import Loader from "../../../layout/Loader";
 import { getCurrentDate } from "../../../../helper/dateHelper";
 import { useGlobalState } from "../../../../state";
+import ReturnService from "../../../../services/ReturnService";
 
 // create context API
 const AdjustmentContext = createContext();
 const { Provider } = AdjustmentContext;
 
-const StockAdjustment = () => {
+const Return = () => {
 	let [currentUser] = useGlobalState("currentUser");
-	const initialStockAdjustmentValue = {
+	const initialReturn = {
 		id: null,
-		Mode: "add",
 		Quantity: 0,
 		DateCreated: getCurrentDate(),
+		Total: 0,
 		Reason: "",
 		medicineId: null,
 		userId: currentUser.id,
 	};
 
-	const [adjustment, setAdjustment] = useState(initialStockAdjustmentValue);
+	const [returnInformation, setReturnInformation] = useState(initialReturn);
 	const [productList, setProductList] = useState([]);
 	const [selectedProduct, setSelectedProduct] = useState({});
 	const [searchInput, setSearchInput] = useState("");
@@ -32,45 +33,24 @@ const StockAdjustment = () => {
 
 	// context api value
 	const contextValue = {
-		adjustment,
-		setAdjustment,
+		returnInformation,
+		setReturnInformation,
 	};
 
 	useEffect(() => {
 		getProductList();
 	}, []);
 
-	const createStockAdjustment = async () => {
-		await StockAdjustmentService.createStockAdjustment(adjustment)
-			.then((response) => {
-				console.log(response.data);
-				setAlertMessage(response.data.message);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
+	useEffect(() => {
+		setTotal();
+	}, [returnInformation.Quantity]);
 
 	const increaseProductStock = async () => {
 		let data = {
-			Quantity: adjustment.Quantity,
+			Quantity: returnInformation.Quantity,
 		};
-		await MedicineService.updateMedicineStock(adjustment.medicineId, data)
-			.then((response) => {
-				console.log(response.data);
-				setLoading(false);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
-	};
-
-	const decreaseProductStock = async () => {
-		let data = {
-			Quantity: adjustment.Quantity,
-		};
-		await MedicineService.updateDecreaseMedicineStock(
-			adjustment.medicineId,
+		await MedicineService.updateMedicineStock(
+			returnInformation.medicineId,
 			data
 		)
 			.then((response) => {
@@ -82,19 +62,27 @@ const StockAdjustment = () => {
 			});
 	};
 
-	const adjustStock = async (event) => {
+	const createReturn = async () => {
+		await ReturnService.createReturn(returnInformation)
+			.then((response) => {
+				console.log(response.data);
+				setAlertMessage(response.data.message);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
+	};
+
+	const returnProduct = async (event) => {
 		event.preventDefault();
-		if (adjustment.medicineId === null) return alert("Pick product to adjust.");
+		if (returnInformation.medicineId === null)
+			return alert("Pick product to adjust.");
 		if (!AlertPrompt()) return;
 
 		setLoading(true);
-		await createStockAdjustment();
-		if (adjustment.Mode === "add") {
-			await increaseProductStock();
-		} else {
-			await decreaseProductStock();
-		}
-		setAdjustment(initialStockAdjustmentValue);
+		await createReturn();
+		await increaseProductStock();
+		setReturnInformation(initialReturn);
 		setSelectedProduct({});
 	};
 
@@ -119,6 +107,23 @@ const StockAdjustment = () => {
 			.catch((err) => {
 				console.log(err);
 			});
+	};
+
+	const computeTotal = () => {
+		let total =
+			parseFloat(selectedProduct.SellingPrice) *
+			parseInt(returnInformation.Quantity);
+
+		if (isNaN(total)) return 0;
+		return total;
+	};
+
+	const setTotal = () => {
+		let total = computeTotal();
+		setReturnInformation((prevState) => ({
+			...prevState,
+			Total: total.toFixed(2),
+		}));
 	};
 
 	return (
@@ -158,7 +163,7 @@ const StockAdjustment = () => {
 							<div className="-75 border border-dark rounded simple-shadow mt-3">
 								<ProductDetails
 									selectedProduct={selectedProduct}
-									adjustStock={adjustStock}
+									adjustStock={returnProduct}
 								/>
 							</div>
 						</div>
@@ -170,11 +175,12 @@ const StockAdjustment = () => {
 };
 
 const ProductDetails = ({ selectedProduct, adjustStock }) => {
-	const { adjustment, setAdjustment } = useContext(AdjustmentContext);
+	const { returnInformation, setReturnInformation } =
+		useContext(AdjustmentContext);
 
 	const handleInputChange = (event) => {
 		const { name, value } = event.target;
-		setAdjustment((prevState) => ({ ...prevState, [name]: value }));
+		setReturnInformation((prevState) => ({ ...prevState, [name]: value }));
 	};
 
 	return (
@@ -193,33 +199,43 @@ const ProductDetails = ({ selectedProduct, adjustStock }) => {
 					/>
 				</div>
 				<div className="col-sm-12 col-md">
-					<label className="required" htmlFor="Mode">
-						Mode:
-					</label>
-					<select
-						name="Mode"
-						id="Mode"
-						className="form-select form-input"
-						value={adjustment.Mode}
-						onChange={handleInputChange}
-						required
-					>
-						<option value="add">Add</option>
-						<option value="subtract">Subtract</option>
-					</select>
-				</div>
-			</div>
-			<div className="row mt-3 col-12">
-				<div className="col-sm-12 col-md">
-					<label htmlFor="">Stock On Hand:</label>
+					<label htmlFor="">Total:</label>
 					<input
 						type="text"
 						className="form-control form-input"
 						disabled={true}
-						defaultValue={selectedProduct ? selectedProduct.Quantity : ""}
+						value={returnInformation.Total}
+					/>
+				</div>
+			</div>
+			<div className="row mt-3 col-12">
+				<div className="col-sm-12 col-md">
+					<label htmlFor="">Unit Prize:</label>
+					<input
+						type="text"
+						className="form-control form-input"
+						disabled={true}
+						defaultValue={selectedProduct ? selectedProduct.SellingPrice : ""}
 					/>
 				</div>
 				<div className="col-sm-12 col-md">
+					<label className="required" htmlFor="Reason">
+						Reason:
+					</label>
+					<input
+						type="text"
+						name="Reason"
+						id="Reason"
+						placeholder="Reason for return"
+						className="form-control form-input"
+						value={returnInformation.Reason}
+						onChange={handleInputChange}
+						required
+					/>
+				</div>
+			</div>
+			<div className="row mt-3 col-12">
+				<div className="col-sm-12 col-md-6">
 					<label className="required" htmlFor="Quantity">
 						Qty:
 					</label>
@@ -228,42 +244,20 @@ const ProductDetails = ({ selectedProduct, adjustStock }) => {
 						name="Quantity"
 						id="Quantity"
 						min={1}
+						disabled={selectedProduct.SellingPrice ? false : true}
 						placeholder="Quantity to adjust"
 						className="form-control form-input"
-						value={adjustment.Quantity}
+						value={returnInformation.Quantity}
 						onChange={handleInputChange}
 						required
 					/>
 				</div>
 			</div>
-			<div className="row mt-3 col-12">
-				<div className="col-sm-12 col-md">
-					<label htmlFor="">Supplier:</label>
-					<input
-						type="text"
-						className="form-control form-input"
-						disabled={true}
-						defaultValue={
-							selectedProduct.supplier
-								? selectedProduct.supplier.SupplierName
-								: ""
-						}
-					/>
-				</div>
-				<div className="col-sm-12 col-md">
-					<label htmlFor="Reason">Reason:</label>
-					<input
-						type="text"
-						name="Reason"
-						id="Reason"
-						placeholder="Reason for adjustment"
-						className="form-control form-input"
-						value={adjustment.Reason}
-						onChange={handleInputChange}
-					/>
-				</div>
-			</div>
-			<button type="submit" className="btn btn-primary simple-shadow mt-3">
+			<button
+				type="submit"
+				className="btn btn-primary simple-shadow mt-3"
+				disabled={returnInformation.medicineId ? false : true}
+			>
 				Create
 			</button>
 		</form>
@@ -271,7 +265,8 @@ const ProductDetails = ({ selectedProduct, adjustStock }) => {
 };
 
 const ProductTable = ({ productList, setSelectedProduct }) => {
-	const { adjustment, setAdjustment } = useContext(AdjustmentContext);
+	const { returnInformation, setReturnInformation } =
+		useContext(AdjustmentContext);
 
 	const productData = () => {
 		return (
@@ -282,14 +277,17 @@ const ProductTable = ({ productList, setSelectedProduct }) => {
 					className="cursor-pointer"
 					onClick={async () => {
 						await setSelectedProduct(product);
-						await setAdjustment({ ...adjustment, medicineId: product.id });
+						await setReturnInformation({
+							...returnInformation,
+							medicineId: product.id,
+						});
 					}}
 				>
 					<td>{index}</td>
 					<td>{product.ProductCode}</td>
 					<td>{product.ProductName}</td>
 					<td>{product.Quantity}</td>
-					<td>{product.SupplierPrice}</td>
+					<td>{product.SellingPrice}</td>
 				</tr>
 			))
 		);
@@ -304,7 +302,7 @@ const ProductTable = ({ productList, setSelectedProduct }) => {
 						<th scope="col">PCode</th>
 						<th scope="col">Item</th>
 						<th scope="col">On hand</th>
-						<th scope="col">Unit Cost</th>
+						<th scope="col">Unit Price</th>
 					</tr>
 				</thead>
 				<tbody>{productData()}</tbody>
@@ -349,4 +347,4 @@ const SearchProduct = ({
 	);
 };
 
-export default StockAdjustment;
+export default Return;

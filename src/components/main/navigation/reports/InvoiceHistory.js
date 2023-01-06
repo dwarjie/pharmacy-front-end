@@ -6,8 +6,10 @@ import { formatDate, getCurrentDate } from "../../../../helper/dateHelper";
 
 import logo from "../../../../asset/logo.png";
 import StockAdjustmentService from "../../../../services/StockAdjustmentService";
+import ReturnService from "../../../../services/ReturnService";
+import InvoiceService from "../../../../services/InvoiceService";
 
-const StockAdjustmentHistory = () => {
+const InvoiceHistory = () => {
 	let componentRef = useRef();
 
 	const initialSearchDate = {
@@ -38,7 +40,7 @@ const StockAdjustmentHistory = () => {
 			to: searchDate.to,
 		};
 
-		await StockAdjustmentService.getAllByDate(dateObj)
+		await InvoiceService.getAllByDate(dateObj)
 			.then((response) => {
 				console.log(response.data);
 				setProductList(response.data);
@@ -58,7 +60,7 @@ const StockAdjustmentHistory = () => {
 			) : (
 				<div className="col-12 h-auto border border-dark rounded simple-shadow">
 					<div className="p-3">
-						<h4>Stock Adjustment History</h4>
+						<h4>Invoice Report</h4>
 						<hr />
 					</div>
 					<div className="p-3">
@@ -134,16 +136,25 @@ class ComponentToPrint extends React.Component {
 				items &&
 				items.map((product, index) => (
 					<tr key={index}>
-						<td>{product.medicine.ProductCode}</td>
-						<td>{product.medicine.ProductName}</td>
-						<td>{product.Quantity}</td>
-						<td>{product.Mode}</td>
-						<td>{product.Reason}</td>
-						<td>{formatDate(product.DateCreated)}</td>
+						<td>{product.InvoiceNo}</td>
+						<td>{formatDate(product.InvoiceDate)}</td>
+						<td>{formatDate(product.PaidDate)}</td>
+						<td>{product.handler.FirstName}</td>
+						<td>{product.patient.FirstName}</td>
 						<td>{product.user.FirstName}</td>
+						<td>{product.Total}</td>
 					</tr>
 				))
 			);
+		};
+
+		const getPriceTotal = () => {
+			let priceTotal = 0;
+			items.map((product, index) => {
+				priceTotal += product.Total;
+			});
+
+			return priceTotal.toFixed(2);
 		};
 
 		return (
@@ -154,25 +165,39 @@ class ComponentToPrint extends React.Component {
 					<br />
 					<h6>ActivCare Home Health Solution Inc.</h6>
 					<h6>3 Santa Rosa St, Pasig, 1603 Metro Manila</h6>
-					<h2 className="mt-3">Stock Adjustment History</h2>
+					<h2 className="mt-3">Invoice Report</h2>
 				</div>
 				<table className="table table-striped table-hover">
 					<thead className="table-dark">
 						<tr>
-							<th scope="col">PCode</th>
-							<th scope="col">Name</th>
-							<th scope="col">Stock Adjusted</th>
-							<th scope="col">Mode</th>
-							<th scope="col">Reason</th>
-							<th scope="col">Date</th>
-							<th scope="col">Adjusted By</th>
+							<th scope="col">Invoice #</th>
+							<th scope="col">Order Date</th>
+							<th scope="col">Paid Date</th>
+							<th scope="col">Requested</th>
+							<th scope="col">Patient</th>
+							<th scope="col">Prepared</th>
+							<th scope="col">Total</th>
 						</tr>
 					</thead>
-					<tbody>{renderItems()}</tbody>
+					<tbody>
+						{renderItems()}
+
+						<tr>
+							<td className="no-line"></td>
+							<td className="no-line"></td>
+							<td className="no-line"></td>
+							<td className="no-line"></td>
+							<td className="no-line"></td>
+							<td className="no-line text-center">
+								<strong>Grand Total</strong>
+							</td>
+							<td className="no-line text-right">&#8369;{getPriceTotal()}</td>
+						</tr>
+					</tbody>
 				</table>
 			</div>
 		);
 	}
 }
 
-export default StockAdjustmentHistory;
+export default InvoiceHistory;

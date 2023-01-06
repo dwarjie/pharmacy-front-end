@@ -50,6 +50,7 @@ import AddChargeToAccount from "./navigation/invoice/AddChargeToAccount";
 import UpdateChargeToAccount from "./navigation/invoice/UpdateChargeToAccount";
 import InvoiceList from "./navigation/invoice/InvoiceList";
 import PrintChargeToAccount from "./navigation/print/PrintChargeToAccount";
+import Return from "./navigation/return/Return";
 
 // Inventory Tab
 import OrderList from "./navigation/purchase_order/OrderList";
@@ -64,10 +65,12 @@ import StockAdjustment from "./navigation/adjustment/StockAdjustment";
 
 // Reports tab
 import ManagePOS from "./navigation/pos/ManagePOS";
+import InvoiceHistory from "./navigation/reports/InvoiceHistory";
 import MasterList from "./navigation/reports/MasterList";
 import SupplierList from "./navigation/reports/SupplierList";
 import InventoryValuation from "./navigation/reports/InventoryValuation";
 import StockAdjustmentHistory from "./navigation/reports/StockAdjustmentHistory";
+import ReturnHistory from "./navigation/reports/ReturnHistory";
 
 // Utilities Tab
 import AddUser from "./navigation/user/AddUser";
@@ -165,6 +168,7 @@ const ContentContainer = (props) => {
 							path="/sales/charge-to-account/print/:id"
 							element={<PrintChargeToAccount />}
 						/>
+						<Route path="/sales/return" element={<Return />} />
 					</Route>
 					<Route element={<ProtectedURL role={"inventory"} />}>
 						<Route path="/inventory/order-list" element={<OrderList />} />
@@ -194,6 +198,7 @@ const ContentContainer = (props) => {
 					</Route>
 					<Route element={<ProtectedURL role={"reports"} />}>
 						<Route path="/report/sales-report" element={<ManagePOS />} />
+						<Route path="/report/invoice-report" element={<InvoiceHistory />} />
 						<Route path="/report/master-list" element={<MasterList />} />
 						<Route path="/report/supplier-list" element={<SupplierList />} />
 						<Route
@@ -204,6 +209,7 @@ const ContentContainer = (props) => {
 							path="/report/stock-adjustment-history"
 							element={<StockAdjustmentHistory />}
 						/>
+						<Route path="/report/return-history" element={<ReturnHistory />} />
 					</Route>
 					<Route path="*" element={<NotFound content={"NO ACCESS"} />} />
 				</Routes>
